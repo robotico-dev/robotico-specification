@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 namespace Robotico.Specification;
 
 /// <summary>
@@ -39,15 +41,15 @@ internal sealed class AndSpecification<T> : ISpecification<T>
 
     public System.Linq.Expressions.Expression<Func<T, bool>>? ToExpression()
     {
-        System.Linq.Expressions.Expression<Func<T, bool>>? leftExpr = _left.ToExpression();
-        System.Linq.Expressions.Expression<Func<T, bool>>? rightExpr = _right.ToExpression();
+        Expression<Func<T, bool>>? leftExpr = _left.ToExpression();
+        Expression<Func<T, bool>>? rightExpr = _right.ToExpression();
         if (leftExpr is null || rightExpr is null)
             return null;
-        var param = System.Linq.Expressions.Expression.Parameter(typeof(T));
-        var leftBody = System.Linq.Expressions.Expression.Invoke(leftExpr, param);
-        var rightBody = System.Linq.Expressions.Expression.Invoke(rightExpr, param);
-        var and = System.Linq.Expressions.Expression.AndAlso(leftBody, rightBody);
-        return System.Linq.Expressions.Expression.Lambda<Func<T, bool>>(and, param);
+        ParameterExpression param = Expression.Parameter(typeof(T));
+        InvocationExpression leftBody = Expression.Invoke(leftExpr, param);
+        InvocationExpression rightBody = Expression.Invoke(rightExpr, param);
+        BinaryExpression and = Expression.AndAlso(leftBody, rightBody);
+        return Expression.Lambda<Func<T, bool>>(and, param);
     }
 }
 
@@ -66,15 +68,15 @@ internal sealed class OrSpecification<T> : ISpecification<T>
 
     public System.Linq.Expressions.Expression<Func<T, bool>>? ToExpression()
     {
-        System.Linq.Expressions.Expression<Func<T, bool>>? leftExpr = _left.ToExpression();
-        System.Linq.Expressions.Expression<Func<T, bool>>? rightExpr = _right.ToExpression();
+        Expression<Func<T, bool>>? leftExpr = _left.ToExpression();
+        Expression<Func<T, bool>>? rightExpr = _right.ToExpression();
         if (leftExpr is null || rightExpr is null)
             return null;
-        var param = System.Linq.Expressions.Expression.Parameter(typeof(T));
-        var leftBody = System.Linq.Expressions.Expression.Invoke(leftExpr, param);
-        var rightBody = System.Linq.Expressions.Expression.Invoke(rightExpr, param);
-        var or = System.Linq.Expressions.Expression.OrElse(leftBody, rightBody);
-        return System.Linq.Expressions.Expression.Lambda<Func<T, bool>>(or, param);
+        ParameterExpression param = Expression.Parameter(typeof(T));
+        InvocationExpression leftBody = Expression.Invoke(leftExpr, param);
+        InvocationExpression rightBody = Expression.Invoke(rightExpr, param);
+        BinaryExpression or = Expression.OrElse(leftBody, rightBody);
+        return Expression.Lambda<Func<T, bool>>(or, param);
     }
 }
 
@@ -88,11 +90,11 @@ internal sealed class NotSpecification<T> : ISpecification<T>
 
     public System.Linq.Expressions.Expression<Func<T, bool>>? ToExpression()
     {
-        System.Linq.Expressions.Expression<Func<T, bool>>? expr = _spec.ToExpression();
+        Expression<Func<T, bool>>? expr = _spec.ToExpression();
         if (expr is null)
             return null;
-        var param = System.Linq.Expressions.Expression.Parameter(typeof(T));
-        var body = System.Linq.Expressions.Expression.Not(System.Linq.Expressions.Expression.Invoke(expr, param));
-        return System.Linq.Expressions.Expression.Lambda<Func<T, bool>>(body, param);
+        ParameterExpression param = Expression.Parameter(typeof(T));
+        UnaryExpression body = Expression.Not(Expression.Invoke(expr, param));
+        return Expression.Lambda<Func<T, bool>>(body, param);
     }
 }

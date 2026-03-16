@@ -5,7 +5,7 @@ namespace Robotico.Specification;
 /// Composable with And, Or, Not.
 /// </summary>
 /// <typeparam name="T">The type the specification applies to.</typeparam>
-public interface ISpecification<in T>
+public interface ISpecification<T>
 {
     /// <summary>
     /// Returns true if <paramref name="candidate"/> satisfies the specification.
