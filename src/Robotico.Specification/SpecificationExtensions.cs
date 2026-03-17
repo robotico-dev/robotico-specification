@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 namespace Robotico.Specification;
 
 /// <summary>
@@ -10,91 +8,40 @@ public static class SpecificationExtensions
     /// <summary>
     /// And-combines two specifications.
     /// </summary>
-    public static ISpecification<T> And<T>(this ISpecification<T> left, ISpecification<T> right) =>
-        new AndSpecification<T>(left, right);
+    /// <param name="left">The first specification.</param>
+    /// <param name="right">The second specification.</param>
+    /// <returns>A specification that is satisfied when both are satisfied.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="left"/> or <paramref name="right"/> is null.</exception>
+    public static ISpecification<T> And<T>(this ISpecification<T> left, ISpecification<T> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+        return new AndSpecification<T>(left, right);
+    }
 
     /// <summary>
     /// Or-combines two specifications.
     /// </summary>
-    public static ISpecification<T> Or<T>(this ISpecification<T> left, ISpecification<T> right) =>
-        new OrSpecification<T>(left, right);
+    /// <param name="left">The first specification.</param>
+    /// <param name="right">The second specification.</param>
+    /// <returns>A specification that is satisfied when either is satisfied.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="left"/> or <paramref name="right"/> is null.</exception>
+    public static ISpecification<T> Or<T>(this ISpecification<T> left, ISpecification<T> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+        return new OrSpecification<T>(left, right);
+    }
 
     /// <summary>
     /// Negates a specification.
     /// </summary>
-    public static ISpecification<T> Not<T>(this ISpecification<T> spec) =>
-        new NotSpecification<T>(spec);
-}
-
-internal sealed class AndSpecification<T> : ISpecification<T>
-{
-    private readonly ISpecification<T> _left;
-    private readonly ISpecification<T> _right;
-
-    internal AndSpecification(ISpecification<T> left, ISpecification<T> right)
+    /// <param name="spec">The specification to negate.</param>
+    /// <returns>A specification that is satisfied when the given specification is not satisfied.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="spec"/> is null.</exception>
+    public static ISpecification<T> Not<T>(this ISpecification<T> spec)
     {
-        _left = left;
-        _right = right;
-    }
-
-    public bool IsSatisfiedBy(T candidate) => _left.IsSatisfiedBy(candidate) && _right.IsSatisfiedBy(candidate);
-
-    public System.Linq.Expressions.Expression<Func<T, bool>>? ToExpression()
-    {
-        Expression<Func<T, bool>>? leftExpr = _left.ToExpression();
-        Expression<Func<T, bool>>? rightExpr = _right.ToExpression();
-        if (leftExpr is null || rightExpr is null)
-            return null;
-        ParameterExpression param = Expression.Parameter(typeof(T));
-        InvocationExpression leftBody = Expression.Invoke(leftExpr, param);
-        InvocationExpression rightBody = Expression.Invoke(rightExpr, param);
-        BinaryExpression and = Expression.AndAlso(leftBody, rightBody);
-        return Expression.Lambda<Func<T, bool>>(and, param);
-    }
-}
-
-internal sealed class OrSpecification<T> : ISpecification<T>
-{
-    private readonly ISpecification<T> _left;
-    private readonly ISpecification<T> _right;
-
-    internal OrSpecification(ISpecification<T> left, ISpecification<T> right)
-    {
-        _left = left;
-        _right = right;
-    }
-
-    public bool IsSatisfiedBy(T candidate) => _left.IsSatisfiedBy(candidate) || _right.IsSatisfiedBy(candidate);
-
-    public System.Linq.Expressions.Expression<Func<T, bool>>? ToExpression()
-    {
-        Expression<Func<T, bool>>? leftExpr = _left.ToExpression();
-        Expression<Func<T, bool>>? rightExpr = _right.ToExpression();
-        if (leftExpr is null || rightExpr is null)
-            return null;
-        ParameterExpression param = Expression.Parameter(typeof(T));
-        InvocationExpression leftBody = Expression.Invoke(leftExpr, param);
-        InvocationExpression rightBody = Expression.Invoke(rightExpr, param);
-        BinaryExpression or = Expression.OrElse(leftBody, rightBody);
-        return Expression.Lambda<Func<T, bool>>(or, param);
-    }
-}
-
-internal sealed class NotSpecification<T> : ISpecification<T>
-{
-    private readonly ISpecification<T> _spec;
-
-    internal NotSpecification(ISpecification<T> spec) => _spec = spec;
-
-    public bool IsSatisfiedBy(T candidate) => !_spec.IsSatisfiedBy(candidate);
-
-    public System.Linq.Expressions.Expression<Func<T, bool>>? ToExpression()
-    {
-        Expression<Func<T, bool>>? expr = _spec.ToExpression();
-        if (expr is null)
-            return null;
-        ParameterExpression param = Expression.Parameter(typeof(T));
-        UnaryExpression body = Expression.Not(Expression.Invoke(expr, param));
-        return Expression.Lambda<Func<T, bool>>(body, param);
+        ArgumentNullException.ThrowIfNull(spec);
+        return new NotSpecification<T>(spec);
     }
 }

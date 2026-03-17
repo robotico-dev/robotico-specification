@@ -5,10 +5,16 @@
   <Folder Name="/tests/">
     <Project Path="tests/Robotico.Specification.Tests/Robotico.Specification.Tests.csproj" />
   </Folder>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Robotico.Specification.Benchmarks/Robotico.Specification.Benchmarks.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
     <File Path=".editorconfig" />
     <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="LICENSE" />
+    <File Path="nuget.config" />
     <File Path="README.md" />
   </Folder>
 </Solution>
