@@ -1,27 +1,20 @@
 <Project>
+  <!--
+    Path on disk to Robotico.Library.Shared.props (file in this repo, or monorepo csharp/). Build-only — not a NuGet reference; package consumers never load this.
+  -->
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <_RoboticoSharedMsbuildImport Condition="Exists('$(MSBuildThisFileDirectory)Robotico.Library.Shared.props')">$(MSBuildThisFileDirectory)Robotico.Library.Shared.props</_RoboticoSharedMsbuildImport>
+    <_RoboticoSharedMsbuildImport Condition="'$(_RoboticoSharedMsbuildImport)' == ''">$([MSBuild]::GetPathOfFileAbove('Robotico.Library.Shared.props', '$(MSBuildThisFileDirectory)'))</_RoboticoSharedMsbuildImport>
+  </PropertyGroup>
+  <Import Project="$(_RoboticoSharedMsbuildImport)" Condition="'$(_RoboticoSharedMsbuildImport)' != ''" />
+
+  <PropertyGroup>
     <NoWarn>$(NoWarn)</NoWarn>
-    <WarningLevel>8</WarningLevel>
-    <AnalysisLevel>latest-all</AnalysisLevel>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Version>1.0.0</Version>
-    <Authors>Robotico</Authors>
-    <Company>Robotico</Company>
     <Product>Robotico.Specification</Product>
-    <Copyright>Copyright © Robotico</Copyright>
-    <RepositoryType>git</RepositoryType>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisMode>All</AnalysisMode>
     <PackageId>Robotico.Specification</PackageId>
     <Title>Robotico.Specification</Title>
     <Description>Specification pattern for .NET: composable query criteria (ISpecification&lt;T&gt;), And, Or, Not, ExpressionSpecification for LINQ/EF Core. Optional criteria via Robotico.Option. Aligns with Robotico.Domain (IEntity, ValueObject).</Description>
     <PackageTags>specification;ddd;query;repository;robotico</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 </Project>
