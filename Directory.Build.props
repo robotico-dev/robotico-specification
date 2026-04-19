@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <NoWarn>$(NoWarn)</NoWarn>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Product>Robotico.Specification</Product>
     <PackageId>Robotico.Specification</PackageId>
     <Title>Robotico.Specification</Title>
